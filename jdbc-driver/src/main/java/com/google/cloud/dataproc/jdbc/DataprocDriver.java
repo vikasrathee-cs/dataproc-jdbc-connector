@@ -93,10 +93,12 @@ public class DataprocDriver implements Driver {
     Connection createConnection(String url, Properties info) throws SQLException {
         // Valid url format:
         // jdbc:dataproc://<protocol>/<db>;clusterName=<>;other_sess_var_list?hive_conf_list#hive_var_list
-
+        System.out.println("Entering create connection method with url : "+ url);
         if (url.startsWith(DATAPROC_JDBC_HIVE_URL_SCHEMA)) {
+             System.out.println("inside url starts with ");
             HiveJdbcConnectionOptions params = parseHiveUrl(url);
             String myEndpoint = String.format("%s-dataproc.googleapis.com:443", params.region());
+            System.out.println("myEndpoint : " + myEndpoint);
             try {
                 // Configure the settings for the cluster controller client.
                 ClusterControllerSettings clusterControllerSettings =
@@ -108,6 +110,7 @@ public class DataprocDriver implements Driver {
                 DataprocInfo clusterInfo = new DataprocInfo(params, clusterControllerClient);
 
                 String hiveURL = clusterInfo.toHiveJdbcUrl();
+                System.out.println("hiveURL : " + hiveURL);
                 clusterInfo.closeClusterControllerClient();
                 return new HiveConnection(hiveURL, info);
             } catch (IOException e) {
@@ -117,5 +120,6 @@ public class DataprocDriver implements Driver {
             // TODO: support other protocol
             return null;
         }
+         System.out.println("coming out of create connection ");
     }
 }
